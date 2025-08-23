@@ -1,3 +1,6 @@
+This is just a little project I am making for those who want to just have a random wheel app on their computer to just
+make decisions a bit easier to do. (I am making this for vr friends to make picking game worlds easier and randomize them :D )
+
 Using packages Electron and Newtonsoft
 
 to install electron, use npm i electron
