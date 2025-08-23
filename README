@@ -1,0 +1,4 @@
+Using packages Electron and Newtonsoft
+
+to install electron, use npm i electron
+to install Newtonsoft, use npm i newtonsoft.json
