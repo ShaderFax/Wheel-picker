@@ -7,141 +7,18 @@
     <link rel="stylesheet" href="./src/app.css" />
   </head>
   <body>
-    <h1>Temporary wheel!</h1>
     <script src="./src/app.js"></script>
-    <div id="wheel-container">
-      <canvas id="wheel" width="400" height="400"></canvas>
-      <div id="pointer">&#9650;</div>
+    <div class="container">
+      <div class="wheel">
+        <ul class="wheel-list">
+          
+        </ul>
+      </div>
+      <div class="controls">
+        <input type="text" class="item-input" placeholder="Add/Remove item" />
+        <button class="add-item">Add item</button>
+        <button class="remove-item">Remove item</button>
+        <button class="spin-wheel">Spin wheel</button>
     </div>
-    <div id="controls">
-      <input type="text" id="item-input" placeholder="Add item..." />
-      <input type="color" id="color-input" value="#ff0000" />
-      <button id="add-item">Add</button>
-      <button id="spin-btn">Spin</button>
-      <ul id="item-list"></ul>
-    </div>
-    <script>
-      // Default items
-      const defaultItems = [
-      { label: "Slashco", color: "#ff4d4d" },
-      { label: "Probability Labs", color: "#ffe066" },
-      { label: "Gigas", color: "#7d5fff" },
-      { label: "Audience Anarchy", color: "#32a2a8"}
-      ];
-      let items = [...defaultItems];
-
-      const wheel = document.getElementById('wheel');
-      const ctx = wheel.getContext('2d');
-      const itemList = document.getElementById('item-list');
-      const itemInput = document.getElementById('item-input');
-      const colorInput = document.getElementById('color-input');
-      const addItemBtn = document.getElementById('add-item');
-      const pointer = document.getElementById('pointer');
-      const spinBtn = document.getElementById('spin-btn');
-
-      let spinning = false;
-      let currentAngle = 0;
-      let spinTimeout = null;
-
-      function drawWheel(angle = 0) {
-      ctx.clearRect(0, 0, wheel.width, wheel.height);
-      const radius = wheel.width / 2;
-      const angleStep = (2 * Math.PI) / items.length;
-      let startAngle = angle;
-      items.forEach((item, i) => {
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, startAngle, startAngle + angleStep);
-        ctx.fillStyle = item.color;
-        ctx.fill();
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(startAngle + angleStep / 2);
-        ctx.textAlign = "right";
-        ctx.fillStyle = "#222";
-        ctx.font = "16px sans-serif";
-        ctx.fillText(item.label, radius - 10, 5);
-        ctx.restore();
-        startAngle += angleStep;
-      });
-      }
-
-      function updateItemList() {
-      itemList.innerHTML = "";
-      items.forEach((item, idx) => {
-        const li = document.createElement("li");
-        li.style.color = item.color;
-        li.textContent = item.label + " ";
-        const removeBtn = document.createElement("button");
-        removeBtn.textContent = "Remove";
-        removeBtn.onclick = () => {
-        items.splice(idx, 1);
-        drawWheel(currentAngle);
-        updateItemList();
-        };
-        li.appendChild(removeBtn);
-        itemList.appendChild(li);
-      });
-      }
-
-      addItemBtn.onclick = () => {
-      const label = itemInput.value.trim();
-      const color = colorInput.value;
-      if (label) {
-        items.push({ label, color });
-        itemInput.value = "";
-        drawWheel(currentAngle);
-        updateItemList();
-      }
-      };
-
-      spinBtn.onclick = () => {
-      if (spinning || items.length === 0) return;
-      spinning = true;
-      let spinAngle = Math.random() * 2 * Math.PI + 6 * 2 * Math.PI; // 6 full spins + random
-      let duration = 3000; // ms
-      let start = null;
-
-      function animateWheel(timestamp) {
-        if (!start) start = timestamp;
-        let elapsed = timestamp - start;
-        let progress = Math.min(elapsed / duration, 1);
-        // Ease out
-        let eased = 1 - Math.pow(1 - progress, 3);
-        currentAngle = spinAngle * eased;
-        drawWheel(currentAngle);
-        if (progress < 1) {
-        spinTimeout = requestAnimationFrame(animateWheel);
-        } else {
-        spinning = false;
-        // Optionally: highlight selected item
-        const radius = wheel.width / 2;
-        const angleStep = (2 * Math.PI) / items.length;
-        let landedAngle = (2 * Math.PI - (currentAngle % (2 * Math.PI))) % (2 * Math.PI);
-        let selectedIdx = Math.floor(landedAngle / angleStep) % items.length;
-        let selectedItem = items[selectedIdx];
-        window.alert(`Landed on: ${selectedItem.label}`);
-        }
-      }
-      spinTimeout = requestAnimationFrame(animateWheel);
-      };
-
-      // Initial render
-      drawWheel();
-      updateItemList();
-
-      // Pointer styling
-      pointer.style.position = "absolute";
-      pointer.style.left = "50%";
-      pointer.style.top = "10px";
-      pointer.style.transform = "translateX(-50%)";
-      pointer.style.fontSize = "2rem";
-      pointer.style.color = "#222";
-
-      // Container styling
-      document.getElementById('wheel-container').style.position = "relative";
-      document.getElementById('wheel').style.display = "block";
-      document.getElementById('wheel').style.margin = "40px auto 0 auto";
-    </script>
   </body>
 </html>
